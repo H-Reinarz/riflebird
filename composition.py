@@ -6,6 +6,12 @@ Created on Fri Oct 13 16:14:09 2017
 @author: H-Reinarz
 """
 
+#Imports
+import inspect
+
+
+
+
 class Display:
     '''Class containing all components with individual sections.
     Its input to the rendering process of the output figure.'''
@@ -13,8 +19,17 @@ class Display:
     def __init__(self, title, desc=None):
         
         self.title = title
+        self.desc = desc
         self.components = []
-        pass
+
+
+    def __repr__(self):
+        return f"Display: {self.title}" 
+
+    
+    def __str__(self):
+        return self.__repr__ + f"\n{self.desc}\n{self.components}"
+
 
 
 
@@ -26,13 +41,19 @@ class Component:
     def __init__(self, title, desc=None):
         
         self.title = title
+        self.desc = desc
         self.sections = []
         
-        pass
  
     def add_comment(): #don't know
         pass
 
+    def __repr__(self):
+        return f"Component: {self.title}" 
+
+    
+    def __str__(self):
+        return self.__repr__ + f"\n{self.desc}\n{self.sections}"
 
 
 class Section:
@@ -42,15 +63,37 @@ class Section:
     def __init__(self, title, desc=None):
         
         self.title = title
-        self.elements = []
-        
+        self.desc = desc
+        self.elements = []       
         self.output = None
+                        
     
-    def collect():
-        pass
+    def collect(self, func, **se_kwargs):
+        #function wrapper
+        def collected(*args, **kwargs):
+            func_name = func.__name__
+            call_args = inspect.getcallargs(func, *args, **kwargs)
+            #Add Section Element
+            self.elements.append(SectionElement(func_name, call_args, **se_kwargs ))
+            return func(*args, **kwargs)        
+        return collected
 
-    def add_comment():
-        pass
+
+
+    def add_comment(self, text):
+        self.elements.append(Comment(text))
+
+
+        
+    def __repr__(self):
+        return f"Section: {self.title}" 
+
+    
+    def __str__(self):
+        return self.__repr__ + f"\n{self.desc}\n{self.elements}"
+
+
+
 
 
 class SectionElement:
@@ -63,10 +106,28 @@ class SectionElement:
         self.desc = desc
         
         self.__dict__.update(custom_attrs)
+
+
+    def __repr__(self):
+        return f"Section Element: {self.name}" 
         
-    def __str__():
+
+    def __str__(self):
+        if 'call_dict' in self.__dict__:
+            return self.__repr__ + f"\n{self.desc}\n{list(self.call_dict.keys())}"
+        else:
+            return self.__repr__ + f"\n{self.desc}"
         pass
     
     
-    def __repr__():
-        pass
+        
+
+
+
+
+   
+class Comment(SectionElement):
+    '''Comment class for adding comments to sections.'''
+    def __init__(self, desc):
+        self.name = "Comment"
+        self.desc = desc
