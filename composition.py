@@ -102,8 +102,10 @@ class SectionElement:
     def __init__(self, name, call_dict, desc=None, ignore=[], flag=[], **custom_attrs):
         self.name = name
         self.call_dict = call_dict
-        self.ignore = ignore
         self.desc = desc
+        self.ignore = ignore
+        self.flag = flag
+
         
         self.__dict__.update(custom_attrs)
 
