@@ -9,7 +9,7 @@ Created on Fri Oct 13 16:14:09 2017
 #Imports
 import inspect
 
-
+from collections import namedtuple
 
 
 class Display:
@@ -56,6 +56,8 @@ class Component:
         return self.__repr__ + f"\n{self.desc}\n{self.sections}"
 
 
+
+
 class Section:
     '''Class representing one step in a workflow.
     It stores collected function calls and the output to display.'''
@@ -66,6 +68,7 @@ class Section:
         self.desc = desc
         self.elements = []       
         self.output = None
+        self.plot_call = None
                         
     
     def collect(self, func, **se_kwargs):
@@ -77,6 +80,16 @@ class Section:
             self.elements.append(SectionElement(func_name, call_args, **se_kwargs ))
             return func(*args, **kwargs)        
         return collected
+
+
+
+    def render_with(self, func):
+        def grab_args(self, *args, **kwargs):
+            plot_call = namedtuple("plot_call", ["func", "args", "kwargs"])
+            
+            self.plot_call(plot_call(func, args, kwargs))
+        return grab_args
+
 
 
 
@@ -123,8 +136,6 @@ class SectionElement:
     
     
         
-
-
 
 
    
